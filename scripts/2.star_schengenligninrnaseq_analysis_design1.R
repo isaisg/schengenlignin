@@ -197,6 +197,23 @@ df_end <- merge(melted_sub,Res[,c(2,5,7,8,9)], by = c("Gene","Genotype"),all.x =
 df_end <- df_end[,-c(5)]
 colnames(df_end) <- c("Gene","Genotype","Expression","ClusterGeneAll","log2FoldChange_vs_WT","pvalue_vs_WT","padj_vs_WT")
 
+#Append the gene information
+### Mapped to gene symbol ######
+x <- org.At.tairSYMBOL
+mapped_genes <- mappedkeys(x)
+xx <- as.list(x[mapped_genes])
+df_gene_symbol <-lapply(X = xx,FUN = function(x){paste(x,collapse = "/")})  %>%
+  do.call(rbind,.)
+df_gene_symbol <- data.frame(Gene = rownames(df_gene_symbol),
+                             Symbol = df_gene_symbol[,1],row.names = NULL)
+
+df_end$GeneSymbol <- match(df_end$Gene,df_gene_symbol$Gene) %>%
+  df_gene_symbol$Symbol[.]
+df_end <- df_end[,c(1,2,4,3,5:8)]
+df_end$Gene <- df_end$Gene %>% factor(levels = order_genes %>% rev)
+df_end <- with(df_end,order(Gene)) %>%
+  df_end[.,] 
+
 
 ## Gene ontology analysis
 mlist <- list(
