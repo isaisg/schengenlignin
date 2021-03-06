@@ -1,3 +1,3 @@
 # schengenlignin
 
-Repository associated with the RNASeq analysis of the following manuscript:
+Repository associated with the RNASeq analysis of the following manuscript
